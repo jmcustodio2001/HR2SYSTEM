@@ -3,8 +3,12 @@
 
 <head>
     <title>Mega Able bootstrap admin template by codedthemes </title>
+    <!-- HTML5 Shim and Respond.js IE10 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 10]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
     <!-- Meta -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -13,7 +17,7 @@
     <meta name="keywords" content="bootstrap, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
     <meta name="author" content="codedthemes" />
     <!-- Favicon icon -->
-
+    
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
     <!-- Google font-->     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
     <!-- Required Fremwork -->
@@ -32,7 +36,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/animate.css/css/animate.css">
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-
+    
     <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.css">
 </head>
 
@@ -63,7 +67,7 @@
                     <div class="circle"></div>
                 </div>
             </div>
-
+            
             <div class="spinner-layer spinner-yellow">
                 <div class="circle-clipper left">
                     <div class="circle"></div>
@@ -75,7 +79,7 @@
                     <div class="circle"></div>
                 </div>
             </div>
-
+            
             <div class="spinner-layer spinner-green">
                 <div class="circle-clipper left">
                     <div class="circle"></div>
@@ -118,7 +122,7 @@
                         <i class="ti-more"></i>
                     </a>
                 </div>
-
+            
                 <div class="navbar-container container-fluid">
                     <ul class="nav-left">
                         <li>
@@ -220,7 +224,7 @@
                 </div>
             </div>
         </nav>
-
+    
         <div class="pcoded-main-container">
             <div class="pcoded-wrapper">
                 <nav class="pcoded-navbar">
@@ -233,7 +237,7 @@
                                     <span id="more-details">John Doe<i class="fa fa-caret-down"></i></span>
                                 </div>
                             </div>
-
+                        
                             <div class="main-menu-content">
                                 <ul>
                                     <li class="more-details">
@@ -339,7 +343,7 @@
                                             <span class="pcoded-mcaret"></span>
                                         </a>
                                     </li>
-
+                            
                                 </ul>
                             </li>
                         </ul>
@@ -359,9 +363,9 @@
                                     <span class="pcoded-mcaret"></span>
                                 </a>
                             </li>
-
+                    
                         </ul>
-
+                    
                         <div class="pcoded-navigation-label" data-i18n="nav.category.forms">Chart &amp; Maps</div>
                         <ul class="pcoded-item pcoded-left-item">
                             <li>
@@ -408,9 +412,9 @@
                                     </li>
                                 </ul>
                             </li>
-
+                    
                         </ul>
-
+                    
                         <div class="pcoded-navigation-label" data-i18n="nav.category.other">Other</div>
                         <ul class="pcoded-item pcoded-left-item">
                             <li class="pcoded-hasmenu ">
@@ -450,7 +454,7 @@
                                             <span class="pcoded-mcaret"></span>
                                         </a>
                                     </li>
-
+                            
                                 </ul>
                             </li>
                         </ul>
@@ -611,15 +615,20 @@
                     </div>
                 </div>
                 <!-- Main-body end -->
-
+                
                 <div id="styleSelector">
-
+                
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
+<!-- Warning Section Starts -->
+<!-- Older IE warning message -->
+<!--[if lt IE 10]>
 <div class="ie-warning">
     <h1>Warning!!</h1>
     <p>You are using an outdated version of Internet Explorer, please upgrade <br/>to any of the following web browsers to access this website.</p>
@@ -659,6 +668,7 @@
     </div>
     <p>Sorry for the inconvenience!</p>
 </div>
+<![endif]-->
 <!-- Warning Section Ends -->
 <!-- Required Jquery -->
     <script type="text/javascript" src="assets/js/jquery/jquery.min.js"></script>     <script type="text/javascript" src="assets/js/jquery-ui/jquery-ui.min.js "></script>     <script type="text/javascript" src="assets/js/popper.js/popper.min.js"></script>     <script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js "></script>

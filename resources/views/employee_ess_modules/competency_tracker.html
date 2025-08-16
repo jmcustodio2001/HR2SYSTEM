@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Competency Progress CRUD</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+
+<div class="container">
+  <h2 class="mb-4">Competency Progress</h2>
+  <button class="btn btn-primary mb-3" onclick="openForm()">Add Progress</button>
+  <table class="table table-bordered table-striped" id="progressTable">
+    <thead class="table-dark">
+      <tr>
+        <th>Progress ID</th>
+        <th>Employee ID</th>
+        <th>Skill Name</th>
+        <th>Current Level</th>
+        <th>Target Level</th>
+        <th>Completion %</th>
+        <th>Last Updated</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="progressModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="progressForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Competency Progress</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="progress_id">
+
+          <div class="mb-3">
+            <label>Employee ID</label>
+            <input type="text" id="employee_id" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Skill Name</label>
+            <input type="text" id="skill_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Current Level</label>
+            <input type="text" id="current_level" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Target Level</label>
+            <input type="text" id="target_level" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Completion %</label>
+            <input type="number" id="completion_percentage" class="form-control" required min="0" max="100">
+          </div>
+          <div class="mb-3">
+            <label>Last Updated</label>
+            <input type="date" id="last_updated" class="form-control" required>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let progressData = JSON.parse(localStorage.getItem("competency_progress") || "[]");
+let editingIndex = null;
+const tableBody = document.querySelector("#progressTable tbody");
+const modal = new bootstrap.Modal(document.getElementById('progressModal'));
+
+function renderTable() {
+  tableBody.innerHTML = "";
+  progressData.forEach((item, index) => {
+    tableBody.innerHTML += `
+      <tr>
+        <td>${item.progress_id}</td>
+        <td>${item.employee_id}</td>
+        <td>${item.skill_name}</td>
+        <td>${item.current_level}</td>
+        <td>${item.target_level}</td>
+        <td>${item.completion_percentage}%</td>
+        <td>${item.last_updated}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="editProgress(${index})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProgress(${index})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function openForm() {
+  document.getElementById("progressForm").reset();
+  editingIndex = null;
+  document.querySelector(".modal-title").textContent = "Add Competency Progress";
+  modal.show();
+}
+
+function editProgress(index) {
+  const item = progressData[index];
+  editingIndex = index;
+  document.getElementById("progress_id").value = item.progress_id;
+  document.getElementById("employee_id").value = item.employee_id;
+  document.getElementById("skill_name").value = item.skill_name;
+  document.getElementById("current_level").value = item.current_level;
+  document.getElementById("target_level").value = item.target_level;
+  document.getElementById("completion_percentage").value = item.completion_percentage;
+  document.getElementById("last_updated").value = item.last_updated;
+  document.querySelector(".modal-title").textContent = "Edit Competency Progress";
+  modal.show();
+}
+
+function deleteProgress(index) {
+  if(confirm("Are you sure you want to delete this record?")) {
+    progressData.splice(index, 1);
+    saveData();
+  }
+}
+
+document.getElementById("progressForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const newItem = {
+    progress_id: editingIndex !== null ? document.getElementById("progress_id").value : Date.now(),
+    employee_id: document.getElementById("employee_id").value,
+    skill_name: document.getElementById("skill_name").value,
+    current_level: document.getElementById("current_level").value,
+    target_level: document.getElementById("target_level").value,
+    completion_percentage: document.getElementById("completion_percentage").value,
+    last_updated: document.getElementById("last_updated").value
+  };
+
+  if(editingIndex !== null) {
+    progressData[editingIndex] = newItem;
+  } else {
+    progressData.push(newItem);
+  }
+  saveData();
+  modal.hide();
+});
+
+function saveData() {
+  localStorage.setItem("competency_progress", JSON.stringify(progressData));
+  renderTable();
+}
+
+renderTable();
+</script>
+
+</body>
+</html>

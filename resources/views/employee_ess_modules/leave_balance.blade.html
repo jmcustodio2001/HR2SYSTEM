@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave Applications & Balances - Employee Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('assets/css/employee_dashboard-style.css') }}">
+</head>
+<body style="background-color: #f8f9fa !important;">
+
+  {{-- Topbar & Sidebar --}}
+  @include('employee_ess_modules.partials.employee_topbar')
+  @include('employee_ess_modules.partials.employee_sidebar')
+  <div id="overlay" class="position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50" style="z-index:1040; display: none;"></div>
+
+  <main id="main-content" class="p-4">
+    {{-- Leave Balances --}}
+    <h2 class="fw-bold mb-3">My Leave Balances</h2>
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Leave Type</th>
+                <th>Total Days</th>
+                <th>Used Days</th>
+                <th>Remaining</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($leaveBalances as $balance)
+                <tr>
+                  <td>{{ $balance->leave_type }}</td>
+                  <td>{{ $balance->total_days }}</td>
+                  <td>{{ $balance->used_days }}</td>
+                  <td>{{ $balance->total_days - $balance->used_days }}</td>
+                </tr>
+              @empty
+                <tr><td colspan="4" class="text-center text-muted">No leave balances available.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {{-- Leave Applications --}}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="fw-bold">My Leave Applications</h2>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#leaveModal">
+        <i class="bi bi-plus-circle me-2"></i> Apply for Leave
+      </button>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Leave ID</th>
+                <th>Employee ID</th>
+                <th>Leave Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Days</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($leaveApplications as $leave)
+                <tr>
+                  <td>{{ $leave->leave_id }}</td>
+                  <td>{{ $leave->employee_id }}</td>
+                  <td>{{ $leave->leave_type }}</td>
+                  <td>{{ $leave->start_date }}</td>
+                  <td>{{ $leave->end_date }}</td>
+                  <td>{{ $leave->total_days }}</td>
+                  <td>
+                    <span class="badge
+                      @if($leave->status == 'Approved') bg-success
+                      @elseif($leave->status == 'Pending') bg-warning
+                      @else bg-danger @endif">
+                      {{ $leave->status }}
+                    </span>
+                  </td>
+                  <td>
+                    <a href="{{ route('employee.leave-applications.edit', $leave->leave_id) }}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <form action="{{ route('employee.leave-applications.destroy', $leave->leave_id) }}" method="POST" class="d-inline">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancel this leave?')">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              @empty
+                <tr><td colspan="8" class="text-center text-muted">No leave applications yet.</td></tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {{-- Leave Application Modal --}}
+  <div class="modal fade" id="leaveModal" tabindex="-1">
+    <div class="modal-dialog">
+      <form action="{{ route('employee.leave-applications.store') }}" method="POST" class="modal-content">
+        @csrf
+        <div class="modal-header">
+          <h5 class="modal-title">Apply for Leave</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Employee ID</label>
+            <input type="text" name="employee_id" class="form-control" value="{{ auth()->user()->employee_id }}" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Leave Type</label>
+            <select name="leave_type" class="form-select" required>
+              <option value="">Select</option>
+              <option value="Vacation">Vacation</option>
+              <option value="Sick">Sick</option>
+              <option value="Emergency">Emergency</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Start Date</label>
+            <input type="date" name="start_date" id="start_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">End Date</label>
+            <input type="date" name="end_date" id="end_date" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Total Days</label>
+            <input type="number" name="total_days" id="total_days" class="form-control" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select" required>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button class="btn btn-primary">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('start_date').addEventListener('change', calculateDays);
+    document.getElementById('end_date').addEventListener('change', calculateDays);
+
+    function calculateDays() {
+      const start = new Date(document.getElementById('start_date').value);
+      const end = new Date(document.getElementById('end_date').value);
+      if (start && end && end >= start) {
+        const diffTime = Math.abs(end - start) + 1; // +1 day for inclusive count
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        document.getElementById('total_days').value = diffDays;
+      } else {
+        document.getElementById('total_days').value = '';
+      }
+    }
+  </script>
+</body>
+</html>

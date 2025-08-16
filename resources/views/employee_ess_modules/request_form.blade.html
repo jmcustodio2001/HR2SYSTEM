@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Training Requests - Employee Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    h2 {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .status-badge {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container py-4">
+    <h2 class="mb-4 text-center">📚 My Training Requests</h2>
+
+    <div class="row" id="requestCards"></div>
+</div>
+
+<!-- Modal for Viewing Details -->
+<div class="modal fade" id="viewModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Training Request Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let requests = JSON.parse(localStorage.getItem('trainingRequests')) || [];
+
+// Demo data if empty
+if (requests.length === 0) {
+    requests = [
+        {
+            request_id: "TR1001",
+            employee_id: "EMP001",
+            training_title: "Advanced Excel Training",
+            reason: "Improve reporting efficiency",
+            status: "Approved",
+            requested_date: "2025-07-10"
+        },
+        {
+            request_id: "TR1002",
+            employee_id: "EMP001",
+            training_title: "Leadership Development",
+            reason: "For upcoming promotion",
+            status: "Pending",
+            requested_date: "2025-07-25"
+        }
+    ];
+    localStorage.setItem('trainingRequests', JSON.stringify(requests));
+}
+
+function renderCards() {
+    const container = document.getElementById('requestCards');
+    container.innerHTML = '';
+
+    requests.forEach((req, index) => {
+        const badgeClass =
+            req.status === 'Approved' ? 'bg-success' :
+            req.status === 'Pending' ? 'bg-warning text-dark' :
+            'bg-danger';
+
+        container.innerHTML += `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card p-3 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">${req.training_title}</h5>
+                        <p class="mb-1"><strong>Reason:</strong> ${req.reason}</p>
+                        <p class="mb-1"><strong>Date:</strong> ${req.requested_date}</p>
+                        <span class="status-badge ${badgeClass}">${req.status}</span>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end">
+                        <button class="btn btn-outline-primary btn-sm" onclick="viewRequest(${index})">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function viewRequest(index) {
+    const r = requests[index];
+    document.getElementById('modalBody').innerHTML = `
+        <p><strong>Request ID:</strong> ${r.request_id}</p>
+        <p><strong>Training Title:</strong> ${r.training_title}</p>
+        <p><strong>Reason:</strong> ${r.reason}</p>
+        <p><strong>Status:</strong> <span class="status-badge ${
+            r.status === 'Approved' ? 'bg-success' :
+            r.status === 'Pending' ? 'bg-warning text-dark' : 'bg-danger'
+        }">${r.status}</span></p>
+        <p><strong>Requested Date:</strong> ${r.requested_date}</p>
+    `;
+    new bootstrap.Modal(document.getElementById('viewModal')).show();
+}
+
+renderCards();
+</script>
+
+</body>
+</html>

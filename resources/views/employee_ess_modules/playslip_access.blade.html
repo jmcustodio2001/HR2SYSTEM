@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Payslips - Employee Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    body { padding: 20px; background-color: #f8f9fa; }
+    h2 { color: #0d6efd; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mb-4">My Payslips</h2>
+
+    <!-- Payslip Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th>Payslip ID</th>
+                    <th>Pay Period</th>
+                    <th>Basic Salary</th>
+                    <th>Deductions</th>
+                    <th>Net Salary</th>
+                    <th>Generated Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="payslipTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Viewing Details -->
+<div class="modal fade" id="viewModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Payslip Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Filled by JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let payslips = JSON.parse(localStorage.getItem('payslips')) || [];
+
+// Demo data if no payslips exist
+if (payslips.length === 0) {
+    payslips = [
+        {
+            payslip_id: "PS1001",
+            employee_id: "EMP001",
+            pay_period_start: "2025-07-01",
+            pay_period_end: "2025-07-15",
+            basic_salary: 25000,
+            deductions: 2000,
+            net_salary: 23000,
+            generated_date: "2025-07-16"
+        },
+        {
+            payslip_id: "PS1002",
+            employee_id: "EMP001",
+            pay_period_start: "2025-07-16",
+            pay_period_end: "2025-07-31",
+            basic_salary: 25000,
+            deductions: 1500,
+            net_salary: 23500,
+            generated_date: "2025-08-01"
+        }
+    ];
+    localStorage.setItem('payslips', JSON.stringify(payslips));
+}
+
+function renderTable() {
+    const tableBody = document.getElementById('payslipTableBody');
+    tableBody.innerHTML = '';
+
+    payslips.forEach((payslip, index) => {
+        tableBody.innerHTML += `
+            <tr>
+                <td>${payslip.payslip_id}</td>
+                <td>${payslip.pay_period_start} to ${payslip.pay_period_end}</td>
+                <td>₱${payslip.basic_salary.toLocaleString()}</td>
+                <td>₱${payslip.deductions.toLocaleString()}</td>
+                <td><strong>₱${payslip.net_salary.toLocaleString()}</strong></td>
+                <td>${payslip.generated_date}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="viewPayslip(${index})">View</button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function viewPayslip(index) {
+    const p = payslips[index];
+    document.getElementById('modalBody').innerHTML = `
+        <p><strong>Payslip ID:</strong> ${p.payslip_id}</p>
+        <p><strong>Pay Period:</strong> ${p.pay_period_start} to ${p.pay_period_end}</p>
+        <p><strong>Basic Salary:</strong> ₱${p.basic_salary.toLocaleString()}</p>
+        <p><strong>Deductions:</strong> ₱${p.deductions.toLocaleString()}</p>
+        <p><strong>Net Salary:</strong> ₱${p.net_salary.toLocaleString()}</p>
+        <p><strong>Generated Date:</strong> ${p.generated_date}</p>
+    `;
+    new bootstrap.Modal(document.getElementById('viewModal')).show();
+}
+
+renderTable();
+</script>
+
+</body>
+</html>
